@@ -1,3 +1,7 @@
+/*
+ * Bağli listeye giriş çalışma mantığı
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
