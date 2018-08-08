@@ -233,7 +233,7 @@ int main()
 		printf("%3d", x[i]);
 		for(int x=0; x < 17; x++)
 			printf("%5d", y[x]);
-		printf("\n");
+		printf("\n ");
 	}
 	
 	
