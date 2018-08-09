@@ -64,7 +64,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-#define AvlMax(a, b) (((a) > (b)) ? (a) : (b))
+
+#define Avlmax(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct _AVL
 {
@@ -88,8 +89,8 @@ AVL *AvlRotLeft(AVL *root)
 	B->left = A;
 	A->right = T1;
 
-	A->height = 1 + max(height(A->left), height(A->right));
-	root->height = 1 + max(height(root->left), height(root->right));
+	A->height = 1 + Avlmax(height(A->left), height(A->right));
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
 	return root;
 }
 AVL *AvlRotRight(AVL *root)
@@ -102,8 +103,8 @@ AVL *AvlRotRight(AVL *root)
 	B->right = A;
 	A->left = T1;
 
-	A->height = 1 + max(height(A->left), height(A->right));
-	root->height = 1 + max(height(root->left), height(root->right));
+	A->height = 1 + Avlmax(height(A->left), height(A->right));
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
 	return root;
 }
 int getBalance(AVL *a)
@@ -128,7 +129,7 @@ AVL *AvlInsert(AVL *a, int data)
 	else
 		return a;
 
-	a->height = 1 + max(height(a->left), height(a->right));
+	a->height = 1 + Avlmax(height(a->left), height(a->right));
 
 	int balance = getBalance(a);
 	// Left Left Case	{R-Rotation}
@@ -189,7 +190,7 @@ AVL *AvlDelete(AVL *a, int data)
 	}
 	if (a == NULL)
 		return NULL;
-	a->height = 1 + max(height(a->left), height(a->right));
+	a->height = 1 + Avlmax(height(a->left), height(a->right));
 
 	int balance = getBalance(a);
 	// Left Left Case	{R-Rotation}
@@ -274,7 +275,7 @@ void avlDisplayTree(AVL *root)
 			if (b3)
 			{
 				if (c5 = b3->left)
-					x[iter / 4 + iter / 2 - iter / ] = c5->data; //18 {9}
+					x[iter / 16 + iter / 4 + iter/4] = c5->data; //18 {9}
 				if (c6 = b3->right)
 					x[iter / 16 + iter / 8 + iter / 2] = c6->data; //22 {11}
 			}
@@ -333,7 +334,7 @@ void avlDisplayTree(AVL *root)
 	} while (formul / bol >= 1);
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
-	printf("__________________________________________________________________________________________________________________\n");
+	printf("-------------------------------------------------------------------\n\n");
 }
 
 int main()
