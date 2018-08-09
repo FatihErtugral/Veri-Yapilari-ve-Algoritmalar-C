@@ -10,10 +10,9 @@
  *
  *	Açıklama: AVL ağaçlarını anlamak için BST[Binary Search Tree] ağaçlarını bilmek gereklidir.
  *	BST'de veriler eklenirken denge sorunu meydana gelmektedir. AVL ağaçları tam da bu noktada
- *	devreye girer. BST'de dengeyi düzelterek, işlem karmaşıklığını "N log N" indirgemektir.
+ *	devreye girer. BST'de dengeyi düzelterek, amacı işlem karmaşıklığını "N log N" indirgemektir.
  *	Aşağıda bu sorun görsel olarak anlatılmak istenmiştir.
- * 	
- *	(Şekil tabl boşluğu 4 olduğunda düzgün gözükür)
+ * 
  * 	x[] = {10,20,15,30,25,5,40,50,60}
  * 	
  * 			BST:															AVL:
@@ -262,7 +261,6 @@ void avlDisplayTree(AVL *root)
 		}
 		
 	}
-<<<<<<< HEAD
 	if (root->right)
 	{
 		a2 = root->right;
@@ -288,14 +286,6 @@ void avlDisplayTree(AVL *root)
 				x[iter/2-iter/16+iter/2] = c8->data; // 30 {15}
 			}
 		}
-=======
-	
-	for(int i=0; i < 20; i++){
-		printf("%3d", x[i]);
-		for(int x=0; x < 17; x++)
-			printf("%5d", y[x]);
-		printf("\n ");
->>>>>>> 2ec3a3b563aefa40e6317cb2e0e05bfba07fbb5e
 	}
 
 
