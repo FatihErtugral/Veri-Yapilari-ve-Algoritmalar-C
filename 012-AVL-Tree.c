@@ -66,7 +66,8 @@
 #include <windows.h>
 #define AvlMax(a, b) (((a) > (b)) ? (a) : (b))
 
-typedef struct _AVL{
+typedef struct _AVL
+{
 	int data;
 	int height;
 	struct _AVL *left;
@@ -75,54 +76,55 @@ typedef struct _AVL{
 
 int height(AVL *a)
 {
-	return a == NULL ? 0: a->height;
+	return a == NULL ? 0 : a->height;
 }
 AVL *AvlRotLeft(AVL *root)
 {
-	AVL *A	= root;
-	AVL *B	= root->right;
-	AVL *T1	= B->left;
-	
-	root		= B;
-	B->left		= A;
-	A->right	= T1;
+	AVL *A = root;
+	AVL *B = root->right;
+	AVL *T1 = B->left;
 
-	A->height		= 1 + max(height(A->left), height(A->right));
-	root->height	= 1 + max(height(root->left), height(root->right));
+	root = B;
+	B->left = A;
+	A->right = T1;
+
+	A->height = 1 + max(height(A->left), height(A->right));
+	root->height = 1 + max(height(root->left), height(root->right));
 	return root;
 }
 AVL *AvlRotRight(AVL *root)
 {
-	AVL *A	= root;
-	AVL *B	= root->left;
-	AVL *T1	= B->right;
-	
-	root		= B;
-	B->right	= A;
-	A->left		= T1;
+	AVL *A = root;
+	AVL *B = root->left;
+	AVL *T1 = B->right;
 
-	A->height		= 1 + max(height(A->left), height(A->right));
-	root->height	= 1 + max(height(root->left), height(root->right));
+	root = B;
+	B->right = A;
+	A->left = T1;
+
+	A->height = 1 + max(height(A->left), height(A->right));
+	root->height = 1 + max(height(root->left), height(root->right));
 	return root;
 }
-int getBalance(AVL *a){ 
-	return a == NULL ? 0: height(a->left) - height(a->right);
+int getBalance(AVL *a)
+{
+	return a == NULL ? 0 : height(a->left) - height(a->right);
 }
 AVL *AvlInsert(AVL *a, int data)
 {
-	if(a == NULL)
+	if (a == NULL)
 	{
-		a 			= (AVL *)malloc(sizeof(AVL));
-		a->data		= data;
-		a->height	= 1;
-		a->left		= NULL;
-		a->right	= NULL;
+		a = (AVL *)malloc(sizeof(AVL));
+		a->data = data;
+		a->height = 1;
+		a->left = NULL;
+		a->right = NULL;
 		return a;
 	}
-	else if(data < a->data)
-		a->left		= AvlInsert(a->left, data);
-	else if(data > a->data)
-		a->right	= AvlInsert(a->right, data);
+	else if (data < a->data)
+		a->left = AvlInsert(a->left, data);
+	else if (data > a->data)
+		a->right = AvlInsert(a->right, data);
 	else
 		return a;
 
@@ -130,16 +132,16 @@ AVL *AvlInsert(AVL *a, int data)
 
 	int balance = getBalance(a);
 	// Left Left Case	{R-Rotation}
-	if(balance > 1)
+	if (balance > 1)
 	{
-		if(getBalance(a->left) > 0)
+		if (getBalance(a->left) > 0)
 			return AvlRotRight(a);
 		a->left = AvlRotLeft(a->left);
 		return AvlRotRight(a);
 	}
-	else if(balance < -1 )
+	else if (balance < -1)
 	{
-		if(getBalance(a->right) < 0)
+		if (getBalance(a->right) < 0)
 			return AvlRotLeft(a);
 		a->right = AvlRotRight(a->right);
 		return AvlRotLeft(a);
@@ -149,13 +151,13 @@ AVL *AvlInsert(AVL *a, int data)
 }
 AVL *AvlDelete(AVL *a, int data)
 {
-	
+
 	if (a == NULL)
 		return NULL;
 	if (data > a->data)
-		a->right 	= AvlDelete(a->right, data);
+		a->right = AvlDelete(a->right, data);
 	else if (data < a->data)
-		a->left		= AvlDelete(a->left, data);
+		a->left = AvlDelete(a->left, data);
 
 	if (data == a->data)
 	{
@@ -176,7 +178,7 @@ AVL *AvlDelete(AVL *a, int data)
 					iter2 = iter2->left;
 				iter2->left = iter;
 			}
-			else 
+			else
 				a = iter;
 		}
 		else
@@ -185,7 +187,7 @@ AVL *AvlDelete(AVL *a, int data)
 		}
 		free(temp);
 	}
-	if(a == NULL)
+	if (a == NULL)
 		return NULL;
 	a->height = 1 + max(height(a->left), height(a->right));
 
@@ -210,86 +212,83 @@ AVL *AvlDelete(AVL *a, int data)
 }
 void preOrder(AVL *root)
 {
-    if(root != NULL)
-    {
-        preOrder(root->left);
-        preOrder(root->right);
-        printf("%d ", root->data);
-    }
+	if (root != NULL)
+	{
+		preOrder(root->left);
+		preOrder(root->right);
+		printf("%d ", root->data);
+	}
 	printf("\n");
 }
 
-
 void avlDisplayTree(AVL *root)
 {
-	int sayi	= root->height;
-	int kare 	= 2;
-	int *x = NULL, *z =NULL;
-		while(--sayi > 0)
-			kare *= 2;
+	int sayi = root->height;
+	int kare = 2;
+	int *x = NULL, *z = NULL;
+	while (--sayi > 0)
+		kare *= 2;
 	z = malloc(sizeof(int) * kare);
 	x = malloc(sizeof(int) * kare);
-	for(int i=0; i != kare; i++)
+	for (int i = 0; i != kare; i++)
 		x[i] = z[i] = 0;
 	AVL *a1, *a2, *b1, *b2, *b3, *b4, *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8;
 	int iter = kare;
-	x[iter /2] = root->data; // {4}
+	x[iter / 2] = root->data; // {4}
 	if (root->left)
 	{
 		a1 = root->left;
-		x[iter/4] = a1->data; //8 {2}
+		x[iter / 4] = a1->data; //8 {2}
 		if (a1)
 		{
-			if(b1 = a1->left)
-			x[iter/8] = b1->data; //4 {1}
-			if(b2 = a1->right)
-			x[iter/8+iter/4] = b2->data; //12 {3}
+			if (b1 = a1->left)
+				x[iter / 8] = b1->data; //4 {1}
+			if (b2 = a1->right)
+				x[iter / 8 + iter / 4] = b2->data; //12 {3}
 			if (b1)
 			{
-				if(c1 = b1->left)
-				x[iter/16] = c1->data; //2 {1}
-				if(c2 = b1->right)
-				x[iter/16+iter/8] = c2->data; //6 {3}
+				if (c1 = b1->left)
+					x[iter / 16] = c1->data; //2 {1}
+				if (c2 = b1->right)
+					x[iter / 16 + iter / 8] = c2->data; //6 {3}
 			}
 			if (b2)
 			{
-				if(c3 = b2->left)
-				x[iter/16+iter/4] = c3->data; // 10
-				if(c4 = b2->right)
-				x[iter/2-iter/16] = c4->data; //14
+				if (c3 = b2->left)
+					x[iter / 16 + iter / 4] = c3->data; // 10
+				if (c4 = b2->right)
+					x[iter / 2 - iter / 16] = c4->data; //14
 			}
 		}
-		
 	}
 	if (root->right)
 	{
 		a2 = root->right;
-		x[iter/4+iter/2] = a2->data; //24
+		x[iter / 4 + iter / 2] = a2->data; //24
 		if (a2)
 		{
-			if(b3 = a2->left)
-			x[iter/4+iter/2-iter/8] = b3->data;//20 {5}
-			if(b4 = a2->right)
-			x[iter/4+iter/2+iter/8] = b4->data;//28 {7}
+			if (b3 = a2->left)
+				x[iter / 4 + iter / 2 - iter / 8] = b3->data; //20 {5}
+			if (b4 = a2->right)
+				x[iter / 4 + iter / 2 + iter / 8] = b4->data; //28 {7}
 			if (b3)
 			{
-				if(c5 = b3->left)
-				x[iter/4+iter/2-iter/] = c5->data; //18 {9}
-				if(c6 = b3->right)
-				x[iter/16+iter/8+iter/2] = c6->data; //22 {11}
+				if (c5 = b3->left)
+					x[iter / 4 + iter / 2 - iter / ] = c5->data; //18 {9}
+				if (c6 = b3->right)
+					x[iter / 16 + iter / 8 + iter / 2] = c6->data; //22 {11}
 			}
 			if (b4)
 			{
-				if(c7 = b4->left)
-				x[iter/16+iter/4+iter/2] = c7->data; // 26 {13}
-				if(c8 = b4->right)
-				x[iter/2-iter/16+iter/2] = c8->data; // 30 {15}
+				if (c7 = b4->left)
+					x[iter / 16 + iter / 4 + iter / 2] = c7->data; // 26 {13}
+				if (c8 = b4->right)
+					x[iter / 2 - iter / 16 + iter / 2] = c8->data; // 30 {15}
 			}
 		}
 	}
 
-
-/* 
+	/* 
  *	32/2 = 16*1
  *	32/4 = 8*3	8+16
  *	32/8 = 4*3	 4*5	4*7	4+8
@@ -312,7 +311,7 @@ void avlDisplayTree(AVL *root)
 		formul = kare;
 		temp /= 2;
 		bol *= 2;
-		
+
 		if (renk != 2)
 		{
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 237);
@@ -329,39 +328,38 @@ void avlDisplayTree(AVL *root)
 			z[j] == 0 ? printf("%3s", " ") : printf("%2s[%d]", "", z[j]);
 			z[j] = 0;
 		}
-		
+
 		printf("\n");
 	} while (formul / bol >= 1);
 
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),240);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
 	printf("__________________________________________________________________________________________________________________\n");
-
 }
 
-
 int main()
-{	
-	
+{
+
 	AVL *root = NULL;
 	// TEST Right-Left Case
 	root = AvlInsert(root, 3);
 	avlDisplayTree(root);
-    root = AvlInsert(root, 2);
- 	avlDisplayTree(root);
-    root = AvlInsert(root, 10);
-    avlDisplayTree(root);
+	root = AvlInsert(root, 2);
+	avlDisplayTree(root);
+	root = AvlInsert(root, 10);
+	avlDisplayTree(root);
 	root = AvlInsert(root, 11);
 	avlDisplayTree(root);
-    root = AvlInsert(root, 7);
+	root = AvlInsert(root, 7);
 	avlDisplayTree(root);
-    root = AvlInsert(root, 8);
+	root = AvlInsert(root, 8);
 	avlDisplayTree(root);
-    root = AvlInsert(root, 5);
+	root = AvlInsert(root, 5);
 	avlDisplayTree(root);
 	//preOrder(root);
 	// TEST Right-Left Case
 
-	free(root); root = NULL;
+	free(root);
+	root = NULL;
 	root = AvlInsert(root, 10);
 	root = AvlInsert(root, 20);
 	root = AvlInsert(root, 30);
@@ -370,28 +368,30 @@ int main()
 	root = AvlInsert(root, 25);
 
 	avlDisplayTree(root);
-	free(root); root = NULL;
+	free(root);
+	root = NULL;
 	// TEST Left-Right Case
 	root = AvlInsert(root, 10);
-    root = AvlInsert(root, 15);
-    root = AvlInsert(root, 6);
-    root = AvlInsert(root, 5);
-    root = AvlInsert(root, 8);
-    root = AvlInsert(root, 9);
-    root = AvlInsert(root, 7);
+	root = AvlInsert(root, 15);
+	root = AvlInsert(root, 6);
+	root = AvlInsert(root, 5);
+	root = AvlInsert(root, 8);
+	root = AvlInsert(root, 9);
+	root = AvlInsert(root, 7);
 	//preOrder(root);
 	avlDisplayTree(root);
-	free(root); root = NULL;
+	free(root);
+	root = NULL;
 	// TEST Left-Right Case
-    root = AvlInsert(root, 9);
-    root = AvlInsert(root, 5);
-    root = AvlInsert(root, 10);
-    root = AvlInsert(root, -1);
-    root = AvlInsert(root, 6);
-    root = AvlInsert(root, 11);
-    root = AvlInsert(root, -2);
-    root = AvlInsert(root, 1);
-    root = AvlInsert(root, 2);
+	root = AvlInsert(root, 9);
+	root = AvlInsert(root, 5);
+	root = AvlInsert(root, 10);
+	root = AvlInsert(root, -1);
+	root = AvlInsert(root, 6);
+	root = AvlInsert(root, 11);
+	root = AvlInsert(root, -2);
+	root = AvlInsert(root, 1);
+	root = AvlInsert(root, 2);
 	avlDisplayTree(root);
 	printf("\n");
 	root = AvlDelete(root, 9);
