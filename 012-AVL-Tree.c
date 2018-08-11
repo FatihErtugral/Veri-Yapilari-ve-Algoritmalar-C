@@ -65,7 +65,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-#define AvlMax(a, b) (((a) > (b)) ? (a) : (b))
+#define Avlmax(a, b) (((a) > (b)) ? (a) : (b))
 
 typedef struct _AVL{
 	int data;
@@ -74,302 +74,196 @@ typedef struct _AVL{
 	struct _AVL *right;
 } AVL;
 
-int height(AVL *a)
+int height(AVL * a)
 {
-	return a == NULL ? 0: a->height;
+	return a == NULL ? 0 : a->height;
 }
+//	--------------------------------------------------------------------------------------------------------------------
+int getBalance(AVL * root)
+{
+	return root == NULL ? 0 : height(root->left) - height(root->right);
+}
+//	--------------------------------------------------------------------------------------------------------------------
 AVL *AvlRotLeft(AVL *root)
 {
-	AVL *A	= root;
-	AVL *B	= root->right;
-	AVL *T1	= B->left;
-	
-	root		= B;
-	B->left		= A;
-	A->right	= T1;
+	AVL *A = root;
+	AVL *B = root->right;
+	AVL *T1 = B->left;
 
-	A->height		= 1 + max(height(A->left), height(A->right));
-	root->height	= 1 + max(height(root->left), height(root->right));
+	root = B;
+	B->left = A;
+	A->right = T1;
+
+	A->height = 1 + Avlmax(height(A->left), height(A->right));
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
 	return root;
 }
+//	--------------------------------------------------------------------------------------------------------------------
 AVL *AvlRotRight(AVL *root)
 {
-	AVL *A	= root;
-	AVL *B	= root->left;
-	AVL *T1	= B->right;
-	
-	root		= B;
-	B->right	= A;
-	A->left		= T1;
+	AVL *A = root;
+	AVL *B = root->left;
+	AVL *T1 = B->right;
 
-	A->height		= 1 + max(height(A->left), height(A->right));
-	root->height	= 1 + max(height(root->left), height(root->right));
+	root = B;
+	B->right = A;
+	A->left = T1;
+
+	A->height = 1 + Avlmax(height(A->left), height(A->right));
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
 	return root;
 }
-int getBalance(AVL *a){ 
-	return a == NULL ? 0: height(a->left) - height(a->right);
-}
-AVL *AvlInsert(AVL *a, int data)
+//	--------------------------------------------------------------------------------------------------------------------
+AVL *AvlInsert(AVL *root, int data)
 {
-	if(a == NULL)
+	if (root == NULL)
 	{
-		a 			= (AVL *)malloc(sizeof(AVL));
-		a->data		= data;
-		a->height	= 1;
-		a->left		= NULL;
-		a->right	= NULL;
-		return a;
+		root = (AVL *)malloc(sizeof(AVL));
+		if(!root)
+			return EXIT_SUCCESS;
+		root->data = data;
+		root->height = 1;
+		root->left = NULL;
+		root->right = NULL;
+		return root;
 	}
-	else if(data < a->data)
-		a->left		= AvlInsert(a->left, data);
-	else if(data > a->data)
-		a->right	= AvlInsert(a->right, data);
+	else if (data < root->data)
+		root->left = AvlInsert(root->left, data);
+	else if (data > root->data)
+		root->right = AvlInsert(root->right, data);
 	else
-		return a;
+		return root;
 
-	a->height = 1 + max(height(a->left), height(a->right));
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
 
-	int balance = getBalance(a);
-	// Left Left Case	{R-Rotation}
-	if(balance > 1)
-	{
-		if(getBalance(a->left) > 0)
-			return AvlRotRight(a);
-		a->left = AvlRotLeft(a->left);
-		return AvlRotRight(a);
-	}
-	else if(balance < -1 )
-	{
-		if(getBalance(a->right) < 0)
-			return AvlRotLeft(a);
-		a->right = AvlRotRight(a->right);
-		return AvlRotLeft(a);
-	}
+	int balance = getBalance(root);
 
-	return a;
-}
-AVL *AvlDelete(AVL *a, int data)
-{
-	
-	if (a == NULL)
-		return NULL;
-	if (data > a->data)
-		a->right 	= AvlDelete(a->right, data);
-	else if (data < a->data)
-		a->left		= AvlDelete(a->left, data);
-
-	if (data == a->data)
-	{
-		AVL *temp = a;
-		if (a->left == NULL && a->right == NULL)
-		{
-			free(a);
-			return NULL;
-		}
-		if (a->left != NULL)
-		{
-			AVL *iter = a->left;
-			if (a->right != NULL)
-			{
-				a = a->right;
-				AVL *iter2 = a;
-				while (iter2->left != NULL)
-					iter2 = iter2->left;
-				iter2->left = iter;
-			}
-			else 
-				a = iter;
-		}
-		else
-		{
-			a = a->right;
-		}
-		free(temp);
-	}
-	if(a == NULL)
-		return NULL;
-	a->height = 1 + max(height(a->left), height(a->right));
-
-	int balance = getBalance(a);
-	// Left Left Case	{R-Rotation}
 	if (balance > 1)
 	{
-		if (getBalance(a->left) > 0)
-			return AvlRotRight(a);
-		a->left = AvlRotLeft(a->left);
-		return AvlRotRight(a);
+		if (getBalance(root->left) > 0)
+			return AvlRotRight(root);
+		root->left = AvlRotLeft(root->left);
+		return AvlRotRight(root);
 	}
 	else if (balance < -1)
 	{
-		if (getBalance(a->right) < 0)
-			return AvlRotRight(a);
-		a->right = AvlRotRight(a->right);
-		return AvlRotLeft(a);
+		if (getBalance(root->right) < 0)
+			return AvlRotLeft(root);
+		root->right = AvlRotRight(root->right);
+		return AvlRotLeft(root);
 	}
 
-	return a;
+	return root;
 }
+//	--------------------------------------------------------------------------------------------------------------------
+AVL *AvlDelete(AVL *root, int data)
+{
+	if (root == NULL)
+		return NULL;
+	if (data > root->data)
+		root->right = AvlDelete(root->right, data);
+	else if (data < root->data)
+		root->left = AvlDelete(root->left, data);
+
+	if (data == root->data)
+	{
+		AVL *temp = root;								// > Silinecek öğeyi geçici göstericiye al, işlem sonunda free()
+		if (root->left == NULL && root->right == NULL)
+		{
+			free(root);
+			return NULL;
+		}
+		if (root->left != NULL)						// > Root'un SOL kolu NULL değilse,
+		{
+			AVL *iter = root->left;					// > iter oluştur.
+			if (root->right != NULL)				// > Root'un SAĞ koluda NULL değilse,
+			{
+				root = root->right;					// > Root'u SAĞ kolu yap.
+				AVL *iter2 = root;					// > iter2 oluştur.
+				while (iter2->left != NULL)			// > Şimdi iter2'nin en soluna inmeye çalışıyoruz.
+					iter2 = iter2->left;
+				iter2->left = iter;					// > iter2'nin en SOLUNA iter'i koy.
+				iter2->height = 1 + Avlmax(height(iter2->left), height(iter2->right));	// Yükseklik ayarını tazele.
+			}
+			else									// > Root'un SAĞ kolu NULL ise, SOL kolunu Root yap.
+				root = iter;
+		}
+		else										// > Root'un SOL kolu NULL ise, SAĞ kolunu Root yap.
+			root = root->right;
+		free(temp);									// > Hafızada çöp bırakma.
+	}
+	if (root == NULL)	//	Veri bulunmadıysa NULL dön.
+		return NULL;
+	//	YÜKSEKLİK AYARINI TAZELE
+	//	--------------------------------------------------------------------------------------------------------------------
+	root->height = 1 + Avlmax(height(root->left), height(root->right));
+	//	DENGESİZLİK KONTROL
+	//	--------------------------------------------------------------------------------------------------------------------
+	int balance = getBalance(root);
+	//	DURUM KONTROL
+	//	--------------------------------------------------------------------------------------------------------------------
+	if (balance > 1)
+	{
+		/*	--------------------------------------------------------------------------------------------------------------------
+		 *	• Sol - Sol Durumu{Left-Left Case}	->	Sağa döndür			->		{R-Rotation}
+		 *	--------------------------------------------------------------------------------------------------------------------
+		 *	(Sol - Sağ) pozitifse SOL->SOL durumu, SAĞA bir tur döndürülür.
+		 *	--------------------------------------------------------------------------------------------------------------------*/
+		if (getBalance(root->left) > 0)
+			return AvlRotRight(root);
+		/*	--------------------------------------------------------------------------------------------------------------------
+		 *	• Sol - Sağ Durumu{Left-Right Case}	->	Sola döndür, Sağa döndür ->	{L-Rotation | R-Rotation}
+		 *	--------------------------------------------------------------------------------------------------------------------
+		 *	Yukardaki kontrol olumsuzsa, SOL->SAĞ durumu, rootun SOL kolunu: SOLA bir tur döndürülür, ardından root SAĞA döndürülür.
+		 *	--------------------------------------------------------------------------------------------------------------------*/
+		root->left = AvlRotLeft(root->left);
+		return AvlRotRight(root);
+	}
+	else if (balance < -1)
+	{
+		/*	--------------------------------------------------------------------------------------------------------------------
+		 *	• Sağ - Sağ Durumu{Right-Right Case} ->	Sola döndür			->		{L-Rotation}
+		 *	--------------------------------------------------------------------------------------------------------------------
+		 *	(Sol - Sağ) negatifse SAĞ->SAĞ durumu, SOLA bir tur döndürülür.
+		 *	--------------------------------------------------------------------------------------------------------------------*/
+		if (getBalance(root->right) < 0)
+			return AvlRotLeft(root);
+		/*	--------------------------------------------------------------------------------------------------------------------
+		 *	• Sağ - Sol Durumu{Right-Left Case}	->	Sağa döndür, Sola döndür ->	{R-Rotation | L-Rotation}
+		 *	--------------------------------------------------------------------------------------------------------------------
+		 *	Yukardaki kontrol olumsuzsa, SAĞ->SOL durumu, rootun SAĞ kolunu: SOLA bir tur döndürülür, ardından root SOLA döndürülür.
+		 *	--------------------------------------------------------------------------------------------------------------------*/		
+		root->right = AvlRotRight(root->right);
+		return AvlRotLeft(root);
+	}
+
+	return root;
+}
+//	--------------------------------------------------------------------------------------------------------------------
 void preOrder(AVL *root)
 {
-    if(root != NULL)
-    {
-        preOrder(root->left);
-        preOrder(root->right);
-        printf("%d ", root->data);
-    }
-	printf("\n");
-}
-
-
-void avlDisplayTree(AVL *root)
-{
-	int sayi	= root->height;
-	int kare 	= 2;
-	int *x = NULL, *z =NULL;
-		while(--sayi > 0)
-			kare *= 2;
-	z = malloc(sizeof(int) * kare);
-	x = malloc(sizeof(int) * kare);
-	for(int i=0; i != kare; i++)
-		x[i] = z[i] = 0;
-	AVL *a1, *a2, *b1, *b2, *b3, *b4, *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8;
-	int iter = kare;
-	x[iter /2] = root->data; // {4}
-	if (root->left)
+	if (root != NULL)
 	{
-		a1 = root->left;
-		x[iter/4] = a1->data; //8 {2}
-		if (a1)
-		{
-			if(b1 = a1->left)
-			x[iter/8] = b1->data; //4 {1}
-			if(b2 = a1->right)
-			x[iter/8+iter/4] = b2->data; //12 {3}
-			if (b1)
-			{
-				if(c1 = b1->left)
-				x[iter/16] = c1->data; //2 {1}
-				if(c2 = b1->right)
-				x[iter/16+iter/8] = c2->data; //6 {3}
-			}
-			if (b2)
-			{
-				if(c3 = b2->left)
-				x[iter/16+iter/4] = c3->data; // 10
-				if(c4 = b2->right)
-				x[iter/2-iter/16] = c4->data; //14
-			}
-		}
-		
+		preOrder(root->left);
+		preOrder(root->right);
+		printf("%d ", root->data);
 	}
-<<<<<<< HEAD
-	if (root->right)
-	{
-		a2 = root->right;
-		x[iter/4+iter/2] = a2->data; //24
-		if (a2)
-		{
-			if(b3 = a2->left)
-			x[iter/4+iter/2-iter/8] = b3->data;//20 {5}
-			if(b4 = a2->right)
-			x[iter/4+iter/2+iter/8] = b4->data;//28 {7}
-			if (b3)
-			{
-				if(c5 = b3->left)
-				x[iter/4+iter/2-iter/] = c5->data; //18 {9}
-				if(c6 = b3->right)
-				x[iter/16+iter/8+iter/2] = c6->data; //22 {11}
-			}
-			if (b4)
-			{
-				if(c7 = b4->left)
-				x[iter/16+iter/4+iter/2] = c7->data; // 26 {13}
-				if(c8 = b4->right)
-				x[iter/2-iter/16+iter/2] = c8->data; // 30 {15}
-			}
-		}
-=======
-	
-	for(int i=0; i < 20; i++){
-		printf("%3d", x[i]);
-		for(int x=0; x < 17; x++)
-			printf("%5d", y[x]);
-		printf("\n ");
->>>>>>> 2ec3a3b563aefa40e6317cb2e0e05bfba07fbb5e
-	}
-
-
-/* 
- *	32/2 = 16*1
- *	32/4 = 8*3	8+16
- *	32/8 = 4*3	 4*5	4*7	4+8
- *	32/16= 2	2+4;
- */
-
-	int formul = kare;
-	int temp = kare;
-	int bol = 2;
-	int renk = 1;
-	do
-	{
-		formul /= bol;
-
-		while (formul < kare)
-		{
-			z[formul] = x[formul];
-			formul += temp;
-		}
-		formul = kare;
-		temp /= 2;
-		bol *= 2;
-		
-		if (renk != 2)
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 237);
-			renk = 2;
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 97);
-			renk = 1;
-		}
-
-		for (int j = 0; j < kare; ++j)
-		{
-			z[j] == 0 ? printf("%3s", " ") : printf("%2s[%d]", "", z[j]);
-			z[j] = 0;
-		}
-		
-		printf("\n");
-	} while (formul / bol >= 1);
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),240);
-	printf("__________________________________________________________________________________________________________________\n");
-
 }
-
-
 int main()
 {	
 	
 	AVL *root = NULL;
 	// TEST Right-Left Case
 	root = AvlInsert(root, 3);
-	avlDisplayTree(root);
     root = AvlInsert(root, 2);
- 	avlDisplayTree(root);
     root = AvlInsert(root, 10);
-    avlDisplayTree(root);
 	root = AvlInsert(root, 11);
-	avlDisplayTree(root);
     root = AvlInsert(root, 7);
-	avlDisplayTree(root);
     root = AvlInsert(root, 8);
-	avlDisplayTree(root);
     root = AvlInsert(root, 5);
-	avlDisplayTree(root);
-	//preOrder(root);
-	// TEST Right-Left Case
+	preOrder(root);
+	printf("\n");
+	// TEST Right-Left Case end
 
 	free(root); root = NULL;
 	root = AvlInsert(root, 10);
@@ -378,10 +272,11 @@ int main()
 	root = AvlInsert(root, 40);
 	root = AvlInsert(root, 50);
 	root = AvlInsert(root, 25);
+	preOrder(root);
+	printf("\n");
 
-	avlDisplayTree(root);
-	free(root); root = NULL;
 	// TEST Left-Right Case
+	free(root); root = NULL;
 	root = AvlInsert(root, 10);
     root = AvlInsert(root, 15);
     root = AvlInsert(root, 6);
@@ -389,10 +284,11 @@ int main()
     root = AvlInsert(root, 8);
     root = AvlInsert(root, 9);
     root = AvlInsert(root, 7);
-	//preOrder(root);
-	avlDisplayTree(root);
+	preOrder(root);
+	printf("\n");
+	// TEST Left-Right Case end
+
 	free(root); root = NULL;
-	// TEST Left-Right Case
     root = AvlInsert(root, 9);
     root = AvlInsert(root, 5);
     root = AvlInsert(root, 10);
@@ -402,9 +298,8 @@ int main()
     root = AvlInsert(root, -2);
     root = AvlInsert(root, 1);
     root = AvlInsert(root, 2);
-	avlDisplayTree(root);
-	printf("\n");
 	root = AvlDelete(root, 9);
-	avlDisplayTree(root);
+	printf("\n");
+	preOrder(root);
 	return 0;
 }
