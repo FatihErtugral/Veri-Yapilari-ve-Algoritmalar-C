@@ -10,10 +10,9 @@
  *
  *	Açıklama: AVL ağaçlarını anlamak için BST[Binary Search Tree] ağaçlarını bilmek gereklidir.
  *	BST'de veriler eklenirken denge sorunu meydana gelmektedir. AVL ağaçları tam da bu noktada
- *	devreye girer. BST'de dengeyi düzelterek, işlem karmaşıklığını "N log N" indirgemektir.
+ *	devreye girer. BST'de dengeyi düzelterek, amacı işlem karmaşıklığını "N log N" indirgemektir.
  *	Aşağıda bu sorun görsel olarak anlatılmak istenmiştir.
- * 	
- *	(Şekil tabl boşluğu 4 olduğunda düzgün gözükür)
+ * 
  * 	x[] = {10,20,15,30,25,5,40,50,60}
  * 	
  * 			BST:															AVL:
@@ -59,9 +58,8 @@
  *		• Sola Döndürme{Left Rotations}	
  *		• Sağa Döndürme{Right Rotations}
  *
- * 	Bu bilgiler, kaynak belirtmeden paylaşılması yasaktır.
+ * 	Bu bilgilerin, kaynak belirtilmeden paylaşılması yasaktır.
  **/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
