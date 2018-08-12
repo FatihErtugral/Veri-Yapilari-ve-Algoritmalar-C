@@ -129,6 +129,7 @@ int main()
 			break;
 		case 3:
 			free(root);
+			printf("Hafizayi bosalttiniz..\n");
 			root = NULL;
 			break;
 		case 4:
@@ -358,7 +359,8 @@ void AgaciDiziyeYerlestir(AVL *root, int *x)
 	 * [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]  -> Array Dizilis
 	 */
 	////////////////////////////////////////////
-	if(AgacYuksekligi > 2) // 
+	// agac yuksekligi 2 ise, iter'i gezdirmeye gerek yok, sağ ve sola bakıp, veriler diziye yerleştirilir.
+	if(AgacYuksekligi > 2) 
 	{
 		DerinlikBolucu = pow(2, AgacYuksekligi)/2;
 		do{
@@ -421,6 +423,8 @@ void AgaciDiziyeYerlestir(AVL *root, int *x)
 	x[AgacDiziBoyu / DerinlikBolucu * y] = (iter->left == NULL)? -1454	: (iter->left->key);
 	y+=2;
 	x[AgacDiziBoyu / DerinlikBolucu * y] = (iter->right == NULL)? -1454 : (iter->right->key);
+	free(boolean);
+	return ;
 }
 //--------------------------------------------------------------------------------------------------------------------
 void AvlTreeDisplay(AVL *root)
@@ -455,7 +459,6 @@ void AvlTreeDisplay(AVL *root)
 	int formul	= kare;
 	int temp	= kare;
 	int bol		= 2;
-	int renk	= 1;
 	int space	= 1;
 	do
 	{
@@ -469,17 +472,7 @@ void AvlTreeDisplay(AVL *root)
 		formul	= kare;
 		temp 	/= 2;
 		bol 	*= 2;
-		/*
-		if (renk != 2)
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 237);// windows console color
-			renk = 2;
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 97);// windows console color
-			renk = 1;
-		} */
+
 		for (int j = 0; j < kare; ++j)
 		{
 			if(ekran[j] == -1453) // Backgraound
@@ -507,6 +500,9 @@ void AvlTreeDisplay(AVL *root)
 	for(int u=kare; u > 0; u--)
 		printf("----");
 	printf("\n");
+	free(ekran);
+	free(dizgiliAgac);
+	return ;
 }
 //--------------------------------------------------------------------------------------------------------------------
 long long NumaratikGiris(int size, char *mesaj){
@@ -541,132 +537,7 @@ long long NumaratikGiris(int size, char *mesaj){
         }
     }while(flag == 1);
     rvalue = atoll(giris);
+	free(giris);
     return rvalue;
 }
-//--------------------------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------------------------
-/** Eski Ar-Ge yapılan fonksiyon
-void AvlTreeDisplay(AVL *root)
-{
-	if(root == NULL)
-	{
-		printf("Agac Bos..\n");
-		return ;
-	}
-
-	AVL *a1, *a2, *b1, *b2, *b3, *b4, *c1, *c2, *c3, *c4, *c5, *c6, *c7, *c8;
-	int sayi = root->height;
-	int kare = 2;
-	int *x = NULL, *z = NULL;
-
-	while (--sayi > 0)
-		kare *= 2;
-	z = malloc(sizeof(int) * kare);
-	x = malloc(sizeof(int) * kare);
-
-	for (int i = 0; i != kare; i++)
-		x[i] = z[i] = 0;
-	int iter = kare;
-	x[iter / 2] = root->key; // {4}
-	if (root->left)
-	{
-		a1 = root->left;
-		x[iter / 4] = a1->key; //8 {2}
-		if (a1)
-		{
-			if (b1 = a1->left)
-				x[iter / 8] = b1->key; //4 {1}
-			if (b2 = a1->right)
-				x[iter / 8 + iter / 4] = b2->key; //12 {3}
-			if (b1)
-			{
-				if (c1 = b1->left)
-					x[iter / 16] = c1->key; //2 {1}
-				if (c2 = b1->right)
-					x[iter / 16 + iter / 8] = c2->key; //6 {3}
-			}
-			if (b2)
-			{
-				if (c3 = b2->left)
-					x[iter / 16 + iter / 4] = c3->key; // 10
-				if (c4 = b2->right)
-					x[iter / 2 - iter / 16] = c4->key; //14
-			}
-		}
-	}
-	if (root->right)
-	{
-		a2 = root->right;
-		x[iter / 4 + iter / 2] = a2->key; //24
-		if (a2)
-		{
-			if (b3 = a2->left)
-				x[iter / 4 + iter / 2 - iter / 8] = b3->key; //20 {5}
-			if (b4 = a2->right)
-				x[iter / 4 + iter / 2 + iter / 8] = b4->key; //28 {7}
-			if (b3)
-			{
-				if (c5 = b3->left)
-					x[iter / 16 + iter / 4 + iter/4] = c5->key; //18 {9}
-				if (c6 = b3->right)
-					x[iter / 16 + iter / 8 + iter / 2] = c6->key; //22 {11}
-			}
-			if (b4)
-			{
-				if (c7 = b4->left)
-					x[iter / 16 + iter / 4 + iter / 2] = c7->key; // 26 {13}
-				if (c8 = b4->right)
-					x[iter / 2 - iter / 16 + iter / 2] = c8->key; // 30 {15}
-			}
-		}
-	}
-
-	
- 	//	32/2 = 16*1
- 	//	32/4 = 8*3	8+16
- 	//	32/8 = 4*3	 4*5	4*7	4+8
- 	//	32/16= 2	2+4;
- 	
-
-	int formul = kare;
-	int temp = kare;
-	int bol = 2;
-	int renk = 1;
-	do
-	{
-		formul /= bol;
-
-		while (formul < kare)
-		{
-			z[formul] = x[formul];
-			formul += temp;
-		}
-		formul = kare;
-		temp /= 2;
-		bol *= 2;
-
-		if (renk != 2)
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 237);
-			renk = 2;
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 97);
-			renk = 1;
-		}
-
-		for (int j = 0; j < kare; ++j)
-		{
-			z[j] == 0 ? printf("%3s", " ") : printf("%2s[%d]", "", z[j]);
-			z[j] = 0;
-		}
-
-		printf("\n");
-	} while (formul / bol >= 1);
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
-	printf("-------------------------------------------------------------------\n\n");
-}
- **/
 //--------------------------------------------------------------------------------------------------------------------
