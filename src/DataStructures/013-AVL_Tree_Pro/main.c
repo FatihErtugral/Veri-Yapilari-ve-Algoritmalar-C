@@ -77,7 +77,8 @@ typedef struct _AVL
 } AVL;
 
 AVL 		*AvlInsert(AVL *root, int key); 		// Ağaca key ekler.
-AVL 		*AvlDelete(AVL *root, int key); 		// Ağaçtan key siler.	
+AVL 		*AvlDelete(AVL *root, int key); 		// Ağaçtan key siler.
+void		AvlAllDelete(AVL *root);				// Hafızadan ağacı komple siler.
 void 		AvlTreeDisplay(AVL *root);				// Agacı ekrana basar.
 long long 	NumaratikGiris(int size, char *mesaj);	// Rakamlar dışında girişleri engeller.
 
@@ -128,12 +129,12 @@ int main()
 			AvlTreeDisplay(root);
 			break;
 		case 3:
-			free(root);
+			AvlAllDelete(root);
 			printf("Hafizayi bosalttiniz..\n");
 			root = NULL;
 			break;
 		case 4:
-			free(root);
+			AvlAllDelete(root);
 			return 0;
 			break;
 	
@@ -320,6 +321,16 @@ AVL *AvlDelete(AVL *root, int key)
 	return root;
 }
 //--------------------------------------------------------------------------------------------------------------------
+void AvlAllDelete(AVL *root)
+{
+    if (root == NULL)
+        return;
+ 
+    AvlAllDelete(root->left); 
+    AvlAllDelete(root->right);
+	free(root);
+} 
+//--------------------------------------------------------------------------------------------------------------------
 void AgaciDiziyeYerlestir(AVL *root, int *x)
 {
 	AVL *iter 			= root;												// Gezici
@@ -340,15 +351,19 @@ void AgaciDiziyeYerlestir(AVL *root, int *x)
 	 *	Agac uzerine biraz dusundukten sonra, asagidaki formuller yakalndi.
 	 *	Isin zor kismi dizi kordinatlarini yerlestirmekti.
 	 *	Adimlar ikili sayi olarak kodlandi:
-	 *	2^4 = 2 * 2 * 2* 2;
-	 *	1 1 | *3 | L-L	Array[2^4 / 2^4	* 1]	Array[1]	Array[2²/2² * 3]	Array[3]	
-	 *	1 0 | *2 | L-R	Array[2^4 / 2^4 * 5]	Array[5]	Array[2²/2² * 7]	Array[7]
-	 * 	0 1 | *1 | R-L	Array[2^4 / 2^4 * 9]	Array[9]	Array[2²/2² * 11]	Array[11]
-	 *  0 0 | *0 | R-R	Array[2^4 / 2^4 * 13]	Array[13]	Array[2²/2² * 15]	Array[15]
+	 *	
+	 *	1 1 | *3 | Left-Left	->	Array[2^4 / 2^4	* 1]	Array[1]	->	Array[2^4 / 2^4 * 3]	Array[3]	
+	 *	1 0 | *2 | Left-Right	->	Array[2^4 / 2^4 * 5]	Array[5]	->	Array[2^4 / 2^4 * 7]	Array[7]
+	 * 	0 1 | *1 | Right-Left	->	Array[2^4 / 2^4 * 9]	Array[9]	->	Array[2^4 / 2^4 * 11]	Array[11]
+	 *	0 0 | *0 | Right-Right	->	Array[2^4 / 2^4 * 13]	Array[13]	->	Array[2^4 / 2^4 * 15]	Array[15]
 	 * 	
-	 * 	1 | | L			Array[2^4 / 2³ * 1]		Array[2]	Array[2² / 2 * 3]	Array[6]
-	 *	0 | | R 		Array[2^4 / 2³ * 5]		Array[10]	Array[2² / 2 * 7]	Array[14]
-	 *   
+	 * 
+	 * 	1 | | Left	->		Array[2^4 / 2³ * 1]		Array[2]	->	Array[2^4 / 2³ * 3]	Array[6]
+	 *	0 | | Right	->		Array[2^4 / 2³ * 5]		Array[10]	->	Array[2^4 / 2³ * 7]	Array[14]
+	 *
+	 * 
+	 *	Left	->	Array[2^4 / 2² * 1]	-> Array[4]
+	 *	Right	->	Array[2^4 / 2² * 3]	-> Array[12]  
 	 * 
 	 *                                                                 	Height
 	 *                             [8]                                   	4		2¹
@@ -459,6 +474,7 @@ void AvlTreeDisplay(AVL *root)
 	int formul	= kare;
 	int temp	= kare;
 	int bol		= 2;
+	int renk	= 1;
 	int space	= 1;
 	do
 	{
@@ -472,15 +488,25 @@ void AvlTreeDisplay(AVL *root)
 		formul	= kare;
 		temp 	/= 2;
 		bol 	*= 2;
-
+		/*
+		if (renk != 2)
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 237);// windows console color
+			renk = 2;
+		}
+		else
+		{
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 97);// windows console color
+			renk = 1;
+		} */
 		for (int j = 0; j < kare; ++j)
 		{
-			if(ekran[j] == -1453) // Backgraound
+			if(ekran[j] == -1453) // Backgraound Color code = -1453
 			{
 				SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 231);	// tree background color
 				(space == 0) ? printf("%4s","") : printf("%c%c%c%c", 223, 223 ,223,223); 
 			}
-			else if(ekran[j] == -1454) // NULL
+			else if(ekran[j] == -1454) // NULL code = -1454
 			{
 				printf("[--]");
 				(space == 0) ? (space = 1) : (space = 0);
@@ -518,7 +544,7 @@ long long NumaratikGiris(int size, char *mesaj){
         printf("%s", mesaj);
         fgets(giris, (size+1), stdin);	// stdin klavyeden girilen karakterlerin kayıt edildiği dosyadir
 										// fgets ile belirtilen boyut kadar stdin'den karakter okunur, diziye yerleştirilir.
-        fflush(stdin);					// fflus bu stdin dosyasını temizler 
+        fflush(stdin);					// fflush bu fonksiyon, stdin dosyasını temizler(tampon boşaltma)
         for(int i=0; size > i && giris[0] != '\0' && giris[i] != '\n'; i++)
         {
 			// 48 - 57 arası ASCII taplosunda rakamları, 45 ise - işaretini temsil eder
