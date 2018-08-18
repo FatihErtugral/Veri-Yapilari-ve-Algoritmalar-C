@@ -1,2 +1,2 @@
-![](ReadmeStyle/Veriyapilari.png)
+![](ReadmeStyle/VeriYapilari.png)
 ![](ReadmeStyle/AlgrtR.png)
