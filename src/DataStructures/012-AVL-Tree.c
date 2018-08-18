@@ -237,7 +237,7 @@ AVL *AvlDelete(AVL *root, int data)
 
 	return root;
 }
-//	--------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 void preOrder(AVL *root)
 {
 	if (root != NULL)
@@ -247,6 +247,17 @@ void preOrder(AVL *root)
 		printf("%d ", root->data);
 	}
 }
+//--------------------------------------------------------------------------------------------------------------------
+void AvlAllDelete(AVL *root)
+{
+    if (root == NULL)
+        return;
+ 
+    AvlAllDelete(root->left); 
+    AvlAllDelete(root->right);
+	free(root);
+}
+//--------------------------------------------------------------------------------------------------------------------
 int main()
 {	
 	
@@ -263,7 +274,8 @@ int main()
 	printf("\n");
 	// TEST Right-Left Case end
 
-	free(root); root = NULL;
+	AvlAllDelete(root); 
+	root = NULL;
 	root = AvlInsert(root, 10);
 	root = AvlInsert(root, 20);
 	root = AvlInsert(root, 30);
@@ -274,7 +286,8 @@ int main()
 	printf("\n");
 
 	// TEST Left-Right Case
-	free(root); root = NULL;
+	AvlAllDelete(root); 
+	root = NULL;
 	root = AvlInsert(root, 10);
     root = AvlInsert(root, 15);
     root = AvlInsert(root, 6);
@@ -286,7 +299,8 @@ int main()
 	printf("\n");
 	// TEST Left-Right Case end
 
-	free(root); root = NULL;
+	AvlAllDelete(root); 
+	root = NULL;
     root = AvlInsert(root, 9);
     root = AvlInsert(root, 5);
     root = AvlInsert(root, 10);
