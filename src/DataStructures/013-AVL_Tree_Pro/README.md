@@ -1,1 +1,1 @@
-![](/ReadmeStyle/AVLTree.png)
+![](/ReadmeStyle/AVLTree.PNG)
