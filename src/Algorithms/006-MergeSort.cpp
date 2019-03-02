@@ -8,9 +8,9 @@
  *
  *
  *	■ Algoritma Hızı ■
- *	  • Ω En iyi 	: n²
- *	  • Θ Ortalama	: 
- *	  • O En Kötü	: 
+ *	  • Ω En iyi 	: O(NlogN)
+ *	  • Θ Ortalama	: O(NlogN)
+ *	  • O En Kötü	: O(NlogN)
  *	  • Açıklama	: -
  *	■ Hafıza Karmaşıklığı ■
  *
